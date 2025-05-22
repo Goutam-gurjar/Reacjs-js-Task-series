@@ -6,6 +6,19 @@ function TodoList({ todos, deleteTodo, toggleComplete }) {
     return dueDate < today;
   };
 
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case "High":
+        return "red";
+      case "Medium":
+        return "orange";
+      case "Low":
+        return "blue";
+      default:
+        return "gray";
+    }
+  };
+
   return (
     <ul style={{ paddingLeft: "0px" }}>
       {todos.map((todo) => (
@@ -31,14 +44,30 @@ function TodoList({ todos, deleteTodo, toggleComplete }) {
           >
             {todo.text}
           </span>
+
           <small
             style={{
               color: isOverdue(todo.dueDate) && !todo.completed ? "red" : "gray",
+              display: "block",
             }}
           >
             Due: {todo.dueDate}
           </small>
-          <br />
+
+          <small
+            style={{
+              color: getPriorityColor(todo.priority),
+              display: "block",
+              fontWeight: "bold",
+            }}
+          >
+            Priority: {todo.priority}
+          </small>
+
+          <small style={{ display: "block", color: "purple" }}>
+            Category: {todo.category}
+          </small>
+
           <button onClick={() => deleteTodo(todo.id)} style={{ marginTop: "5px" }}>
             Delete
           </button>
