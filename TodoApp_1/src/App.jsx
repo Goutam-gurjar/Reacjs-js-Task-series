@@ -8,6 +8,7 @@ function App() {
   const [priority, setPriority] = useState("Low");
   const [category, setCategory] = useState("Work");
   const [filterCategory, setFilterCategory] = useState("All");
+  const [searchText, setSearchText] = useState("");
 
   const categories = ["Work", "Personal", "Shopping", "Study"];
 
@@ -43,11 +44,14 @@ function App() {
   };
 
   // Filter tasks by selected category
-  const filteredTodos =
-    filterCategory === "All"
-      ? todos
-      : todos.filter((todo) => todo.category === filterCategory);
-
+  const filteredTodos = todos.filter((todo) => {
+    const matchesCategory =
+      filterCategory === "All" || todo.category === filterCategory;
+    const matchesSearch = todo.text
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
   return (
     <div style={{ maxWidth: "700px", margin: "auto" }}>
       <h2>📝 To-Do List with Category Filter</h2>
@@ -107,8 +111,16 @@ function App() {
             </option>
           ))}
         </select>
-      </div>
+        <input
+          type="text"
+          placeholder="Search task..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          style={{ padding: "6px", width: "200px" }}
+        />
 
+      </div>
+     
       <TodoList todos={filteredTodos} deleteTodo={deleteTodo} toggleComplete={toggleComplete} />
     </div>
   );
