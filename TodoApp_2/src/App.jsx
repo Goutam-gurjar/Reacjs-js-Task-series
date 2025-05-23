@@ -9,7 +9,7 @@ function App() {
   const [category, setCategory] = useState("Work");
   const [filterCategory, setFilterCategory] = useState("All");
   const [searchText, setSearchText] = useState("");
-
+  const [sortBy, setSortBy] = useState("none");
   const categories = ["Work", "Personal", "Shopping", "Study"];
 
   const addTodo = () => {
@@ -44,14 +44,25 @@ function App() {
   };
 
   // Filter tasks by selected category
-  const filteredTodos = todos.filter((todo) => {
+  const filteredTodos = todos
+  .filter((todo) => {
     const matchesCategory =
       filterCategory === "All" || todo.category === filterCategory;
     const matchesSearch = todo.text
       .toLowerCase()
       .includes(searchText.toLowerCase());
     return matchesCategory && matchesSearch;
+  })
+  .sort((a, b) => {
+    if (sortBy === "asc") {
+      return new Date(a.dueDate) - new Date(b.dueDate);
+    } else if (sortBy === "desc") {
+      return new Date(b.dueDate) - new Date(a.dueDate);
+    } else {
+      return 0;
+    }
   });
+
   return (
     <div style={{ maxWidth: "700px", margin: "auto" }}>
       <h2>📝 To-Do List with Category Filter</h2>
@@ -120,10 +131,18 @@ function App() {
         />
 
       </div>
-
       <div style={{ marginTop: "10px" }}>
-  <label><strong>Sort by Due Date:</strong></label>{" "}
-</div>
+        <label><strong>Sort by Due Date:</strong></label>{" "}
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          style={{ padding: "6px" }}
+        >
+          <option value="none">None</option>
+          <option value="asc">Earliest First</option>
+          <option value="desc">Latest First</option>
+        </select>
+      </div>
 
      
       <TodoList todos={filteredTodos} deleteTodo={deleteTodo} toggleComplete={toggleComplete} />
